@@ -1,0 +1,29 @@
+BEGIN {elf = 0;} 
+{
+  if ( $0 ~ /^$/ ){
+    elf++;
+  } else {
+    calories[elf]+=$0
+  }
+} 
+END {
+ max = 0;
+ submax = 0;
+ subsubmax = 0;
+ for ( i in calories){
+    if (calories[i] >= calories[max]){
+     subsubmax = submax;
+     submax = max;
+     max = i
+    } 
+    else if (calories[i] >= calories[submax]){
+      subsubmax = submax;
+      submax = i;
+    } else if (calories[i] >= calories[subsubmax]){
+      subsubmax =i;
+    }
+ }
+ totalcal = calories[max]+calories[submax]+calories[subsubmax];
+ 
+ print max+1, submax+1, subsubmax+1, totalcal;
+} 

@@ -1,0 +1,24 @@
+BEGIN {
+total = 0;
+split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",chars, "");
+} 
+{
+  l = length($0)/2;  
+  split(substr($0,0,l),comp1,"")
+  split(substr($0,l+1,l),comp2,"")
+  mat = "0";
+  for ( i in comp1){
+    for ( j in comp2){
+      if ( comp1[i] == comp2[j])
+        mat = comp1[i];
+    }
+  }
+  for ( i in chars){
+    if ( mat == chars[i]){
+      total += i;
+    }
+  }
+} 
+END {
+  print total;
+} 

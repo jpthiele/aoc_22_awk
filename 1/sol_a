@@ -1,0 +1,17 @@
+BEGIN {elf = 0;} 
+{
+  if ( $0 ~ /^$/ ){
+    elf++;
+  } else {
+    calories[elf]+=$0
+  }
+} 
+END {
+ max = 0 
+ for ( i in calories){
+    if (calories[i] > calories[max]){
+     max = i
+    }
+ }
+ print max, calories[max];
+} 

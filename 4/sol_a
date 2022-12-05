@@ -1,0 +1,16 @@
+BEGIN {
+total = 0;
+FS = ",";
+} 
+{
+  split($1,a1,"-")
+  split($2,a2,"-")
+  if ( a1[1] <= a2[1] && a1[2] >= a2[2] ){
+    total++;
+  } else if ( a1[1] >= a2[1] && a1[2] <= a2[2]){
+    total++
+  }
+} 
+END {
+  print total;
+} 
