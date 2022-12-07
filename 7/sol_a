@@ -1,0 +1,61 @@
+BEGIN {
+currentdir = " "
+numsubdirs[" "] = 0; 
+numfiles[" "] = 0;
+dirsize[" "] = 0;
+maxsize = 100000
+}
+{
+## ignore first line
+if(NR > 1){
+  if ($1 == "\$") {#this is a command
+    if($2 == "cd") {#change directory
+      if($3 == ".."){
+        currentdir = parentdir[currentdir];
+      } else {
+        currentdir = sprintf("%s/%s",currentdir,$3);
+        dirsize[currentdir] = 0;
+        numsubdirs[currentdir] = 0;
+      }
+    }
+  }
+  else {
+    if($1 == "dir") {#this is a subdirectory
+      numsubdirs[currentdir]++;
+      tmpdir = sprintf("%s/%s",currentdir,$2);
+      subdir[currentdir "," numsubdirs[currentdir]] = tmpdir;
+#       print tmpdir;
+      parentdir[tmpdir] = currentdir;
+    } else {
+      dirsize[currentdir]+=$1;
+    }
+  }
+}
+} 
+END {
+  #going through all subdirs again...
+  currentdir = " "
+  iterating = 1;
+  subdirindex[" "] = 1;
+  totalsize = 0;
+  while (iterating == 1){
+    if (subdirindex[currentdir] > numsubdirs[currentdir]){ #all subdirs visited
+      if (currentdir == " ") {
+        iterating = 0;
+      } else {
+        dirsize[parentdir[currentdir]]+=dirsize[currentdir];
+        if (dirsize[currentdir] <= maxsize){
+          totalsize += dirsize[currentdir]
+        }        
+        currentdir = parentdir[currentdir];
+        subdirindex[currentdir]++;
+      }
+    } else {
+      tmpdir = subdir[currentdir "," subdirindex[currentdir]];
+      currentdir = tmpdir;
+      subdirindex[currentdir] = 1;
+    }
+  }
+  print " /" dirsize[" "]
+  print totalsize
+} 
