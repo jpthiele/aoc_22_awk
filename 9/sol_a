@@ -1,38 +1,3 @@
-function move_of_tail(headcol,headrow,tailcol,tailrow){
-  if (headcol-1 > tailcol && headrow-1 >tailrow){
-    return tailcol+1 "," tailrow+1;
-  }
-  if (headcol-1 > tailcol && headrow+1 <tailrow){
-    return tailcol+1 "," tailrow-1;
-  }
-  if (headcol+1 < tailcol && headrow-1 >tailrow){
-    return tailcol-1 "," tailrow+1;
-  }
-  if (headcol+1 < tailcol && headrow+1 <tailrow){
-    return tailcol-1 "," tailrow-1;
-  }
-  
-  if (headcol-1 > tailcol){
-    return tailcol+1 "," headrow;
-  }
-  if (headcol+1 < tailcol){
-    return tailcol-1 "," headrow;
-  }
-  if (headrow-1 > tailrow){
-    return headcol "," tailrow+1;
-  }
-  if (headrow+1 < tailrow){
-    return headcol "," tailrow-1;
-  }
-  return tailcol "," tailrow;
-}
-function set_print_arr(printarr,width,height){
-  for ( i = 1 ; i <= width; i++){
-  for ( k = height ; k > 0; k--){
-    printarr[i "," k] = ".";
-  }     
-  }
-}
 function print_array(printarr,width,height){
   for ( k = height ; k > 0; k--){
   for ( i = 1 ; i <= width; i++){
@@ -42,49 +7,68 @@ function print_array(printarr,width,height){
   }
 }
 BEGIN {
-rows[0] = 1;
-rows[1] = 1;
-cols[0] = 1;
-cols[1] = 1;
-width = 6;
-height = 5;
-hrow = 1;
-hcol = 1;
-visited = 1;
-tailvis[1 "," 1] = 1;
-set_print_arr(printarr,width,height);
+  hrow = 1;
+  trow = 1;
+  hcol = 1;
+  tcol = 1;
+  visited = 1;
+  tailvis[1 "," 1] = 1;
+  debug = 0;
+
+  if (debug){
+    width = 6;
+    height = 5;
+    for ( i = 1 ; i <= width; i++){
+      for ( k = height ; k > 0; k--){
+        printarr[i "," k] = ".";
+      }     
+    }
+  }
 }
 {
   comm = $1;
   move = $2;
-  print "==", $0, "==";
+  if (debug){
+    print "==", $0, "==";
+  }
   for ( j = 1; j <= move ; j++){
     if (comm == "R"){
-      cols[0]++;
+      hcol++;
+      if ( hcol-1 > tcol){
+        tcol++;
+        trow = hrow;
+      }
     } else if (comm == "U"){
-      rows[0]++;
+      hrow++;
+      if (hrow-1 > trow){
+        trow++;
+        tcol = hcol;
+      }
     } else if (comm == "L"){
-      cols[0]--;
+      hcol--;
+      if (hcol+1 < tcol){
+        tcol--;
+        trow = hrow;
+      }
     } else {
-      rows[0]--;
+      hrow--;
+      if (hrow+1 < trow){
+        trow--;
+        tcol = hcol;
+      }
     }
-    split(move_of_tail(cols[0],rows[0],cols[1],rows[1]),arr,",")
-    cols[1] = arr[1];
-    rows[1] = arr[2];    
-    
-    trow = rows[1];
-    tcol = cols[1];
     if (tailvis[trow "," tcol] != 1){
       tailvis[trow "," tcol] = 1;
       visited++;
     }
-    printarr[cols[1] "," rows[1]] = "T";
-    printarr[cols[0] "," rows[0]] = "H";
-    
-    print_array(printarr,width,height);
-    printarr[cols[1] "," rows[1]] = ".";
-    printarr[cols[0] "," rows[0]] = ".";
-    print "";
+    if (debug){
+      printarr[tcol "," trow] = "T";
+      printarr[hcol "," hrow] = "H";
+      print_array(printarr,width,height);
+      printarr[tcol "," trow] = ".";
+      printarr[hcol "," hrow] = ".";
+      print "";
+    }
   }
 } 
 END {
