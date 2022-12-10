@@ -1,0 +1,46 @@
+function check(cycle,checkcycle,size){
+  for(j = 0; j < 6; j++){
+    if ( cycle == checkcycle[j]){
+      return cycle;
+      total += X * cycle;
+    }
+  }
+  return 0;
+}
+function printcrt(cycle,X){
+  if (cycle == X-1 || cycle == X || cycle == X+1){
+    printf "#";
+  } else {
+    printf ".";
+  }
+}
+BEGIN {
+cycle = 0;
+X = 1;
+total = 0;
+checksize = 6;
+for(j = 0; j < checksize; j++){
+  checkcycle[j] = 20+j*40;
+}
+}
+{
+  printcrt(cycle % 40,X);
+  cycle++;
+  if((cycle % 40) ==0){
+    print "";
+  }
+  
+  total += X * check(cycle,checkcycle,checksize);
+  if ($1 == "addx"){
+    printcrt(cycle % 40,X);
+    cycle++;
+    if((cycle % 40) ==0){
+      print "";
+    }
+    total += X * check(cycle,checkcycle,checksize);
+    X+=$2;
+  }
+} 
+END {
+  print total;
+} 

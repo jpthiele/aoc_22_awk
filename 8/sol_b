@@ -1,0 +1,57 @@
+BEGIN {
+rows = 1;
+cols = 1;
+}
+{
+if (NR == 1){
+  cols += length($0);
+}
+split($0,arr,"");
+for ( i = 1 ; i < cols ; i++ ){
+  trees[rows "," i] = arr[i];
+}
+rows++;
+} 
+END {
+maxind = 1 "," 1;
+dist[1 "," 1] =0;
+for ( i = 2 ; i < rows-1 ; i++ ){
+  for ( j = 2 ; j < cols-1 ; j++ ){
+    left = 0; 
+    right = 0;
+    up = 0; 
+    down = 0;
+    tree = trees[i "," j];
+    for ( k = i-1 ; k > 0 ; k-- ){
+      left++;
+      if (trees[k "," j] >=  tree){
+        break;
+      }
+    }
+    for ( k = i+1 ; k < cols ; k++ ){
+      right++;
+      if (trees[k "," j] >=  tree){
+        break;
+      }
+    }
+    for ( k = j-1 ; k > 0 ; k-- ){
+      up++;
+      if (trees[i "," k] >=  tree){
+        break;
+      } 
+    }
+    for ( k = j+1 ; k < rows ; k++ ){
+      down++;
+      if (trees[i "," k] >= tree){
+        break;
+      }
+    }
+    distance = left * right * down * up;
+    dist[i "," j] = distance;
+    if (distance > dist[maxind]){
+      maxind = i "," j;
+    }
+  }
+}
+print dist[maxind]
+} 

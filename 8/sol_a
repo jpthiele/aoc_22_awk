@@ -1,0 +1,50 @@
+BEGIN {
+rows = 1;
+cols = 1;
+}
+{
+if (NR == 1){
+  cols += length($0);
+}
+split($0,arr,"");
+for ( i = 1 ; i < cols ; i++ ){
+  trees[rows "," i] = arr[i];
+}
+rows++;
+} 
+END {
+visible = 2 * (rows-1) + 2 * (cols-3);
+for ( i = 2 ; i < rows-1 ; i++ ){
+  for ( j = 2 ; j < cols-1 ; j++ ){
+    left = 0; 
+    right = 0;
+    up = 0; 
+    down = 0;
+    tree = trees[i "," j];
+    for ( k = 1 ; k < i ; k++ ){
+      if (trees[k "," j] >= tree){
+        left = 1;
+      }
+    }
+    for ( k = i+1 ; k < cols ; k++ ){
+      if (trees[k "," j] >= tree){
+        right = 1;
+      }
+    }
+    for ( k = 1 ; k < j ; k++ ){
+      if (trees[i "," k] >= tree){
+        up = 1;
+      }
+    }
+    for ( k = j+1 ; k < rows ; k++ ){
+      if (trees[i "," k] >= tree){
+        down = 1;
+      }
+    }
+    if( up == 0 || down == 0 || left == 0 || right == 0){
+      visible++;
+    }
+  }
+}
+print visible
+} 

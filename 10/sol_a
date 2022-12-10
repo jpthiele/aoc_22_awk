@@ -1,0 +1,28 @@
+BEGIN {
+cycle = 0;
+X = 1;
+total = 0;
+for(j = 0; j < 6; j++){
+  checkcycle[j] = 20+j*40;
+}
+}
+{
+  cycle++;
+  for(j = 0; j < 6; j++){
+    if ( cycle == checkcycle[j]){
+      total += X * cycle;
+    }
+  }
+  if ($1 == "addx"){
+    cycle++;
+    for(j = 0; j < 6; j++){
+      if ( cycle == checkcycle[j]){
+        total += X * cycle;
+      }
+    }
+    X+=$2;
+  }
+} 
+END {
+  print total;
+} 
